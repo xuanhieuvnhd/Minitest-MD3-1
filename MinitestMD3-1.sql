@@ -88,15 +88,15 @@ select * from  Students where studentsAge between 17 and 18;
 #Tìm kiếm học có mã học viên là 9
 select * from  Students where studentsID = 9;
 #Thống kê số lượng học viên các lớp (count)
-select className as 'Lớp Học' , COUNT(studentsFullName) as 'Số Lượng' from Students 
+select className'Lớp Học' , COUNT(studentsFullName) 'Số Lượng' from Students 
 join Classes C on Students.classes_ID = C.classesID group by className;
 #Thống kê số lượng học viên các tỉnh(count)
-select address as 'Tên Địa Chỉ' , COUNT(studentsFullName) as 'Số Lượng' from Students 
+select address'Tên Địa Chỉ' , COUNT(studentsFullName)'Số Lượng' from Students 
 join Address A on A.addressID = Students.address_ID group by address;
 #Tính điểm trung bình của các khoa học (avg)
-select courseID, courseName as 'Tên Khóa Học' , avg(point) as 'Điểm Trung Bình' from Course
+select courseID'Mã khoá học', courseName'Tên Khóa Học' , avg(point)'Điểm Trung Bình' from Course
 join Point P on Course.courseID = P.course_ID group by courseName;
 #Khoá học có điểm trung bình cao nhất
-select courseID, courseName as 'Tên Khóa Học' , avg(point) as 'Điểm Trung Bình' from Course 
+select courseID'Mã khoá học', courseName 'Tên Khóa Học' , avg(point) 'Điểm Trung Bình' from Course 
 join Point P on Course.courseID = P.course_ID group by courseName,
 courseID  having avg(point) >= all (select avg(point) from Point group by Point.course_ID);
