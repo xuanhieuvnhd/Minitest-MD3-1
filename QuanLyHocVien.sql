@@ -77,6 +77,24 @@ insert into Point(pointID, course_ID, students_ID, point) values
 (13,2,3,94),
 (14,1,5,91),
 (15,2,6,98);
+#Hàm sum Hiển thị tổng điểm của các học viên
+select sum(point)'Tổng' from Point;
+#Hàm avg Hiển thị điểm trung bình của tất cả các học viên
+select avg(point)'Điểm Trung Bình' from Point;
+#Hàm count Đếm số bản ghi trong 1 cột
+select count(studentsID)'Mã sinh viên'from Students;
+#Hàm Max trả về giá trị lớn nhất của 1 cột
+select max(studentsAge)'Tuổi sinh viên' from Students;
+#Hàm min trả về giá trị nhỏ nhất của 1 cột
+select min(studentsAge)'Tuổi sinh viên'from Students;
+#Hàm ucase để chuyển đổi chuỗi thành chữ in hoa
+select ucase(studentsFullName)'Tên sinh viên' from Students;
+#Hàm lcase để chuyển đổi chuỗi thành chữ in thường
+select lcase(studentsFullName)'Tên sinh viên' from Students;
+#Hàm len để trả về số lượng kí tự của 1 chuỗi
+select len(studentsFullName) from Students;
+#Hàm now trả về ngày giờ hiện tại của hệ thống
+select now()'Ngày giờ hiện tại' from Students;
 #Hiển thị tất cả các học viên
 select * from  Students;
 #•	Tìm kiếm HV có họ Nguyen
@@ -93,7 +111,7 @@ join Classes C on Students.classes_ID = C.classesID group by className;
 #Thống kê số lượng học viên các tỉnh(count)
 select address'Tên Địa Chỉ' , COUNT(studentsFullName)'Số Lượng' from Students 
 join Address A on A.addressID = Students.address_ID group by address;
-#Tính điểm trung bình của các khoa học (avg)
+#Tính điểm trung bình của các khoá học (avg)
 select courseID'Mã khoá học', courseName'Tên Khóa Học' , avg(point)'Điểm Trung Bình' from Course
 join Point P on Course.courseID = P.course_ID group by courseName;
 #Khoá học có điểm trung bình cao nhất
