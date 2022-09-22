@@ -91,7 +91,7 @@ select studentsID'Mã sinh viên',studentsFullName'Tên sinh viên',min(students
 select studentsID'Mã sinh viên',studentsFullName'Tên sinh viên',ucase(studentsFullName)'Tên sinh viên' from Students;
 #Hàm lcase để chuyển đổi chuỗi thành chữ in thường
 select studentsID'Mã sinh viên',studentsFullName'Tên sinh viên',lcase(studentsFullName)'Tên sinh viên' from Students;
-#Hàm len để trả về số lượng kí tự của 1 chuỗi
+#Hàm lengt để trả về số lượng kí tự của 1 chuỗi
 select studentsID'Mã sinh viên',studentsFullName'Tên sinh viên',length(studentsFullName) as 'Số ký tự'from Students;
 #Hàm now trả về ngày giờ hiện tại của hệ thống
 select studentsID'Mã sinh viên',studentsFullName'Tên sinh viên',now()'Ngày giờ hiện tại' from Students;
@@ -142,7 +142,7 @@ create view Students_views as select studentsID,studentsFullName,studentsPhone f
 select * from Students_views;
 #Xoá View
 drop view Students_views;
-#Sửa View sửa tên Bui Huy Hieu thành Hoàng Anh Hiểu
+#Sửa View sửa tên Bui Huy Hieu thành Hoàng Hiểu
 update Students_views set studentsFullName = 'Hoàng Hiểu' where studentsFullName = 'Bui Huy Hieu';
 #Xoá View theo điều kiện cho trước
 delete from Students_views where studentsfullname = 'Nguyen Hoang Trieu';
