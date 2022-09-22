@@ -16,9 +16,9 @@ create table Students(
     address_ID int not null ,
     classes_ID int not null ,
     studentsAge int not null ,
-    studentsPhone varchar(20) unique ,
-    foreign key (address_ID) references Address(addressID),
-    foreign key (classes_ID) references Classes(classesID)
+    studentsPhone varchar(20) unique
+    # foreign key (address_ID) references Address(addressID),
+#     foreign key (classes_ID) references Classes(classesID)
 );
 create table Course(
     courseID int not null auto_increment primary key,
@@ -29,9 +29,9 @@ create table Point(
     pointID int not null auto_increment primary key,
     course_ID int not null ,
     students_ID int not null ,
-    point float not null ,
-    foreign key (course_ID) references Course(courseID),
-    foreign key (students_ID) references Students(studentsID)
+    point float not null 
+   #  foreign key (course_ID) references Course(courseID),
+#     foreign key (students_ID) references Students(studentsID)
 );
 
 insert into Address (addressID, address) values
@@ -78,26 +78,26 @@ insert into Point(pointID, course_ID, students_ID, point) values
 (14,1,5,91),
 (15,2,6,98);
 #Hàm sum Hiển thị tổng điểm của các học viên
-select sum(point)'Tổng' from Point;
+select sum(point)'Tổng điểm' from Point;
 #Hàm avg Hiển thị điểm trung bình của tất cả các học viên
 select avg(point)'Điểm Trung Bình' from Point;
 #Hàm count Đếm số bản ghi trong 1 cột
-select count(studentsID)'Mã sinh viên'from Students;
+select studentsID'Mã sinh viên',studentsFullName'Tên sinh viên', count(studentsID)'Mã sinh viên'from Students;
 #Hàm Max trả về giá trị lớn nhất của 1 cột
-select max(studentsAge)'Tuổi sinh viên' from Students;
+select studentsID'Mã sinh viên',studentsFullName'Tên sinh viên',max(studentsAge)'Tuổi sinh viên' from Students;
 #Hàm min trả về giá trị nhỏ nhất của 1 cột
-select min(studentsAge)'Tuổi sinh viên'from Students;
+select studentsID'Mã sinh viên',studentsFullName'Tên sinh viên',min(studentsAge)'Tuổi sinh viên'from Students;
 #Hàm ucase để chuyển đổi chuỗi thành chữ in hoa
-select ucase(studentsFullName)'Tên sinh viên' from Students;
+select studentsID'Mã sinh viên',studentsFullName'Tên sinh viên',ucase(studentsFullName)'Tên sinh viên' from Students;
 #Hàm lcase để chuyển đổi chuỗi thành chữ in thường
-select lcase(studentsFullName)'Tên sinh viên' from Students;
+select studentsID'Mã sinh viên',studentsFullName'Tên sinh viên',lcase(studentsFullName)'Tên sinh viên' from Students;
 #Hàm len để trả về số lượng kí tự của 1 chuỗi
-select len(studentsFullName) from Students;
+select studentsID'Mã sinh viên',studentsFullName'Tên sinh viên',length(studentsFullName) as 'Số ký tự'from Students;
 #Hàm now trả về ngày giờ hiện tại của hệ thống
-select now()'Ngày giờ hiện tại' from Students;
+select studentsID'Mã sinh viên',studentsFullName'Tên sinh viên',now()'Ngày giờ hiện tại' from Students;
 #Hiển thị tất cả các học viên
 select * from  Students;
-#•	Tìm kiếm HV có họ Nguyen
+#Tìm kiếm HV có họ Nguyen
 select * from  Students where studentsFullName like 'Nguyen%';
 #Tìm kiếm học viên có tên Anh
 select * from  Students where studentsFullName like '%Anh%';
@@ -118,3 +118,103 @@ join Point P on Course.courseID = P.course_ID group by courseName;
 select courseID'Mã khoá học', courseName 'Tên Khóa Học' , avg(point) 'Điểm Trung Bình' from Course 
 join Point P on Course.courseID = P.course_ID group by courseName,
 courseID  having avg(point) >= all (select avg(point) from Point group by Point.course_ID);
+#Tạo chỉ mục
+# Tìm tên học viên tên Vũ Kiều Anh
+SELECT * FROM Students WHERE studentsFullName = 'Vu Kieu Anh'; 
+#Hiển thị số lần tìm tên Vu Kieu Anh
+EXPLAIN SELECT * FROM Students WHERE studentsFullName = 'Vu Kieu Anh'; 
+#Thêm chỉ mục cho bảng Student cột full name
+ALTER TABLE Students ADD INDEX idx_studentsFullName(studentsFullName);
+#Sau khi thêm chỉ mục thì tìm kiếm nhanh hơn
+EXPLAIN SELECT * FROM Students WHERE studentsFullName = 'Vu Kieu Anh'; 
+#Tìm theo khoá chính
+EXPLAIN SELECT * FROM Students WHERE studentsID = 1; 
+#Thêm chỉ mục cho bảng Student cột số điện thoại
+ALTER TABLE Students ADD INDEX idx_studentsPhone(studentsPhone);
+#Luồng chạy khi tìm số điện thoại của học viên
+EXPLAIN SELECT * FROM Students WHERE studentsPhone = 08468348;
+#Xoá chỉ mục cho bảng Students cột studentsPhone
+ALTER TABLE Students DROP INDEX studentsPhone;
+ALTER TABLE Students DROP INDEX studentsFullName;
+#Tạo View
+create view Students_views as select studentsID,studentsFullName,studentsPhone from Students;
+#Xem View vừa tạo
+select * from Students_views;
+#Xoá View
+drop view Students_views;
+#Sửa View sửa tên Bui Huy Hieu thành Hoàng Anh Hiểu
+update Students_views set studentsFullName = 'Hoàng Hiểu' where studentsFullName = 'Bui Huy Hieu';
+#Xoá View theo điều kiện cho trước
+delete from Students_views where studentsfullname = 'Nguyen Hoang Trieu';
+#Tạo thủ tục lưu trữ
+#Tạo mới 1 hàm tìm kiếm tất cả học viên
+DELIMITER //
+DROP PROCEDURE IF EXISTS `findAllStudents`//
+CREATE PROCEDURE findAllStudents()
+BEGIN
+  SELECT * FROM Students;
+END //
+DELIMITER ;
+#Gọi lại hàm vừa tạo bên trên
+call findAllStudents();
+
+DELIMITER //
+#Nếu đã tồn tại thì xoá
+DROP PROCEDURE IF EXISTS `findAllStudents`//
+#Xong mới tạo mới thủ tục lưu
+CREATE PROCEDURE findAllStudents()
+BEGIN
+SELECT * FROM Students where studentsAge = 16;
+END //
+DELIMITER ;
+call findAllStudents();
+#Tạo một procedure thêm học viên
+DELIMITER //
+DROP PROCEDURE IF EXISTS `addStudents`//
+CREATE PROCEDURE addStudents(
+   In name varchar(100),
+   In Age int,
+   In Phone varchar(20)
+)
+BEGIN
+	INSERT INTO Students (studentsFullName,studentsAge,studentsPhone) 
+    VALUES (name, Age,Phone);
+END //
+DELIMITER ;
+#Gọi procedure addStudents để thêm học viên mới
+CALL addStudents('Nguyen Tuan Anh', 23,9238951);
+call findAllStudents();
+
+#Tạo một procedure sửa học viên
+DELIMITER //
+DROP PROCEDURE IF EXISTS `updateStudents`//
+CREATE PROCEDURE updateStudents(
+   in name varchar(100),
+   in Age int,
+   in Phone varchar(20),
+   out result VARCHAR(50)
+)
+BEGIN
+	UPDATE Students
+    SET studentsFullName = name,studentsAge = Age,studentsPhone = Phone where studentsFullName = name;
+    SET result = 'Cập nhật thông tin thành công!';
+END //
+DELIMITER ;
+#Sửa thông tin học viên với tên là Vu Kieu Anh
+call updateStudents('Vu Kieu Anh',28,8888888,@result);
+select @result;
+call findAllStudents();
+
+#Tạo một procedure sửa học viên
+DELIMITER //
+DROP PROCEDURE IF EXISTS `removeStudents`//
+CREATE PROCEDURE removeStudents(
+	in id int
+)
+BEGIN 
+	DELETE FROM Students WHERE studentsID = id;
+END//
+DELIMITER ;
+#Gọi procedure để xoá học viên theo id
+call removeStudents(5);
+call findAllStudents();
